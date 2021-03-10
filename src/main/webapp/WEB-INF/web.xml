@@ -13,6 +13,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
-        <url-pattern>/settings/user/</url-pattern>
+        <url-pattern>/settings/user/save.do</url-pattern>
     </servlet-mapping>
 </web-app>
