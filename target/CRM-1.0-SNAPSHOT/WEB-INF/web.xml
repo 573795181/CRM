@@ -16,6 +16,16 @@
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
 
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>com.myTest.crm.web.filter.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
+
     <servlet>
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>com.myTest.crm.settings.web.controller.UserController</servlet-class>
@@ -23,5 +33,15 @@
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/settings/user/login.do</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>ActivityController</servlet-name>
+        <servlet-class>com.myTest.crm.workbench.web.controller.ActivityController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ActivityController</servlet-name>
+        <url-pattern>/workbench/activity/getUserList.do</url-pattern>
+        <url-pattern>/workbench/activity/save.do</url-pattern>
     </servlet-mapping>
 </web-app>
