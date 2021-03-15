@@ -1,18 +1,22 @@
 package com.myTest.crm.workbench.service.impl;
 
 import com.myTest.crm.settings.dao.UserDao;
+import com.myTest.crm.settings.domain.User;
 import com.myTest.crm.utils.SqlSessionUtil;
 import com.myTest.crm.vo.PaginationVo;
 import com.myTest.crm.workbench.dao.ActivityDao;
+import com.myTest.crm.workbench.dao.ActivityRemarkDao;
 import com.myTest.crm.workbench.domain.Activity;
 import com.myTest.crm.workbench.service.ActivityService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ActivityServiceImpl implements ActivityService {
     private UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
     private ActivityDao activityDao = SqlSessionUtil.getSqlSession().getMapper(ActivityDao.class);
+    private ActivityRemarkDao remarkDao = SqlSessionUtil.getSqlSession().getMapper(ActivityRemarkDao.class);
 
 
     @Override
@@ -33,5 +37,48 @@ public class ActivityServiceImpl implements ActivityService {
         vo.setTotal(total);
         vo.setDataList(activityList);
         return vo;
+    }
+
+    @Override
+    public boolean delete(String[] ids) {
+        boolean flag = true;
+        //查询出需要删除的备注的数量
+        int count1 = remarkDao.getCountByAids(ids);
+        //删除备注，返回受到影响的条数（实际删除的数量）
+        int count2 = remarkDao.deleteByAids(ids);
+        if(count1!=count2){
+            flag = false;
+        }
+
+        int count3 = activityDao.delete(ids);
+        if(count3!=ids.length){
+            flag = false;
+        }
+        return flag;
+    }
+
+    @Override
+    public Map<String, Object> getUserListAndActivity(String id) {
+        List<User> uList = userDao.getUserList();
+
+        //取a
+        Activity a = activityDao.getById(id);
+
+        //将uList和a打包到map中
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("uList", uList);
+        map.put("a", a);
+
+        return map;
+    }
+
+    @Override
+    public boolean update(Activity a) {
+        boolean flag = true;
+        int count = activityDao.update(a);
+        if(count!=1){
+            flag = false;
+        }
+        return flag;
     }
 }

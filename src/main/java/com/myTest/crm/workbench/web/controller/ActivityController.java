@@ -32,7 +32,67 @@ public class ActivityController extends HttpServlet {
             saveActivity(req,resp);
         }else if ("/workbench/activity/pageList.do".equals(path)){
             pageList(req,resp);
+        }else if("/workbench/activity/delete.do".equals(path)){
+            delete(req,resp);
+        }else if("/workbench/activity/getUserListAndActivity.do".equals(path)){
+            getUserListAndActivity(req,resp);
+        }else if("/workbench/activity/update.do".equals(path)){
+            update(req,resp);
         }
+    }
+
+    private void update(HttpServletRequest req, HttpServletResponse resp) {
+        System.out.println("执行市场活动修改操作");
+
+        String id = req.getParameter("id");
+        String owner = req.getParameter("owner");
+        String name = req.getParameter("name");
+        String startDate = req.getParameter("startDate");
+        String endDate = req.getParameter("endDate");
+        String cost = req.getParameter("cost");
+        String description = req.getParameter("description");
+        //修改时间：当前系统时间
+        String editTime = DateTimeUtil.getSysTime();
+        //修改人：当前登录用户
+        String editBy = ((User)req.getSession().getAttribute("user")).getName();
+
+        Activity a = new Activity();
+        a.setId(id);
+        a.setCost(cost);
+        a.setStartDate(startDate);
+        a.setOwner(owner);
+        a.setName(name);
+        a.setEndDate(endDate);
+        a.setDescription(description);
+        a.setEditBy(editBy);
+        a.setEditTime(editTime);
+
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        boolean flag = as.update(a);
+
+        PrintJson.printJsonFlag(resp, flag);
+
+    }
+
+    private void getUserListAndActivity(HttpServletRequest req, HttpServletResponse resp) {
+        System.out.println("进入到查询用户信息列表和根据市场活动id查询单条记录的操作");
+
+        String id = req.getParameter("id");
+
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        Map<String,Object> map = as.getUserListAndActivity(id);
+
+        PrintJson.printJsonObj(resp, map);
+    }
+
+    private void delete(HttpServletRequest req, HttpServletResponse resp) {
+        System.out.println("执行市场活动的删除操作");
+        String ids[] = req.getParameterValues("id");
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = as.delete(ids);
+        PrintJson.printJsonFlag(resp, flag);
     }
 
     private void pageList(HttpServletRequest req, HttpServletResponse resp) {
