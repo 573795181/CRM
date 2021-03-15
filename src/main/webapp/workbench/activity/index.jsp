@@ -22,15 +22,17 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <script type="text/javascript">
 
 	$(function(){
+		$(".time").datetimepicker({
+			minView: "month",
+			language:  'zh-CN',
+			format: 'yyyy-mm-dd',
+			autoclose: true,
+			todayBtn: true,
+			pickerPosition: "bottom-left"
+		});
+
 		$("#addBtn").click(function () {
-			$(".time").datetimepicker({
-				minView: "month",
-				language:  'zh-CN',
-				format: 'yyyy-mm-dd',
-				autoclose: true,
-				todayBtn: true,
-				pickerPosition: "bottom-left"
-			});
+
 
 			$.ajax({
 				url:"workbench/activity/getUserList.do",
@@ -244,7 +246,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				var html = "";
 				$.each(data.dataList,function (i,n) {
 					html += '<tr class="active">';
-					html += '<td><input type="checkbox" name="xz"/></td>';
+					html += '<td><input type="checkbox" name="xz" value="'+n.id+'"/></td>';
 					html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+n.name+'</a></td>';
 					html += '<td>'+n.owner+'</td>';
 					html += '<td>'+n.startDate+'</td>';

@@ -25,7 +25,6 @@
 
         select * from tbl_activity where id=#{id}
 
-
     </select>
 
     <delete id="delete">

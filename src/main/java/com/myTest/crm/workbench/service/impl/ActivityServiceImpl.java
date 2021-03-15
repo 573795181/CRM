@@ -60,9 +60,10 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Map<String, Object> getUserListAndActivity(String id) {
         List<User> uList = userDao.getUserList();
-
+        System.out.println(id);
         //取a
         Activity a = activityDao.getById(id);
+        System.out.println("a:" + a);
 
         //将uList和a打包到map中
         Map<String,Object> map = new HashMap<String,Object>();
