@@ -7,6 +7,7 @@ import com.myTest.crm.vo.PaginationVo;
 import com.myTest.crm.workbench.dao.ActivityDao;
 import com.myTest.crm.workbench.dao.ActivityRemarkDao;
 import com.myTest.crm.workbench.domain.Activity;
+import com.myTest.crm.workbench.domain.ActivityRemark;
 import com.myTest.crm.workbench.service.ActivityService;
 
 import java.util.HashMap;
@@ -60,10 +61,9 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Map<String, Object> getUserListAndActivity(String id) {
         List<User> uList = userDao.getUserList();
-        System.out.println(id);
+
         //取a
         Activity a = activityDao.getById(id);
-        System.out.println("a:" + a);
 
         //将uList和a打包到map中
         Map<String,Object> map = new HashMap<String,Object>();
@@ -82,4 +82,52 @@ public class ActivityServiceImpl implements ActivityService {
         }
         return flag;
     }
+
+    @Override
+    public Activity detail(String id) {
+        Activity activity = activityDao.detail(id);
+
+        return activity;
+    }
+
+    @Override
+    public List<ActivityRemark> getRemarkListByAid(String id) {
+        List<ActivityRemark> remarkList = remarkDao.getRemarkListByAid(id);
+
+        return remarkList;
+    }
+
+    @Override
+    public boolean deleteRemark(String id) {
+        boolean flag = true;
+        System.out.println(id);
+        int result = remarkDao.deleteRemark(id);
+        if (result!=1){
+            flag = false;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean saveRemark(ActivityRemark remark) {
+        int result = remarkDao.saveRemark(remark);
+        boolean flag = true;
+        if (result!=1){
+            flag = false;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean updateRemark(ActivityRemark ar) {
+        boolean flag = true;
+        int count = remarkDao.updateRemark(ar);
+        if(count!=1){
+            flag = false;
+        }
+
+        return flag;
+    }
+
+
 }
