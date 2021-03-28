@@ -1,22 +1,97 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+%>
 <!DOCTYPE html>
 <html>
 <head>
+	<base href="<%=basePath%>">
 <meta charset="UTF-8">
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script type="text/javascript">
 
 	$(function(){
-		
-		
-		
+
+		$("#addBtn").click(function () {
+
+			$.ajax({
+				url:"workbench/clue/getUserList.do",
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+
+					var html = "<option><option/>";
+					$.each(data,function (i,n) {
+
+						html += "<option value='"+n.id+"'>"+n.name+"<option/>"
+
+					})
+					$("#create-owner").html(html);
+
+					$("#createClueModal").modal("show");
+				}
+			})
+
+		})
+
+		$("#saveBtn").click(function () {
+
+			$.ajax({
+				url:"workbench/clue/save.do",
+				type:"post",
+				data:{
+
+					"fullname" : $.trim($("#create-fullname").val()),
+					"appellation" : $.trim($("#create-appellation").val()),
+					"owner" : $.trim($("#create-owner").val()),
+					"company" : $.trim($("#create-company").val()),
+					"job" : $.trim($("#create-job").val()),
+					"email" : $.trim($("#create-email").val()),
+					"phone" : $.trim($("#create-phone").val()),
+					"website" : $.trim($("#create-website").val()),
+					"mphone" : $.trim($("#create-mphone").val()),
+					"state" : $.trim($("#create-state").val()),
+					"source" : $.trim($("#create-source").val()),
+					"description" : $.trim($("#create-description").val()),
+					"contactSummary" : $.trim($("#create-contactSummary").val()),
+					"nextContactTime" : $.trim($("#create-nextContactTime").val()),
+					"address" : $.trim($("#create-address").val())
+
+				},
+				dataType: "json",
+				success:function (data) {
+
+					if (data.success){
+
+						$("#createClueModal").modal("hide");
+
+					}else {
+						alert("添加线索失败");
+					}
+
+				}
+			})
+
+		})
+
+		$(".time").datetimepicker({
+			minView: "month",
+			language:  'zh-CN',
+			format: 'yyyy-mm-dd',
+			autoclose: true,
+			todayBtn: true,
+			pickerPosition: "top-left"
+		});
+
 	});
 	
 </script>
@@ -39,10 +114,8 @@
 						<div class="form-group">
 							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+								<select class="form-control" id="create-owner">
+
 								</select>
 							</div>
 							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -54,18 +127,16 @@
 						<div class="form-group">
 							<label for="create-call" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-call">
+								<select class="form-control" id="create-appellation">
 								  <option></option>
-								  <option>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
+									<c:forEach items="${appellationList}" var="a">
+										<option value="${a.value}">${a.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-surname">
+								<input type="text" class="form-control" id="create-fullname">
 							</div>
 						</div>
 						
@@ -98,15 +169,11 @@
 							</div>
 							<label for="create-status" class="col-sm-2 control-label">线索状态</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-status">
-								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
+								<select class="form-control" id="create-state">
+									<option></option>
+									<c:forEach items="${clueStateList}" var="c">
+										<option value="${c.value}">${c.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -116,20 +183,9 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-source">
 								  <option></option>
-								  <option>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
+									<c:forEach items="${sourceList}" var="s">
+										<option value="${s.value}">${s.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -138,7 +194,7 @@
 						<div class="form-group">
 							<label for="create-describe" class="col-sm-2 control-label">线索描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
 						</div>
 						
@@ -154,7 +210,7 @@
 							<div class="form-group">
 								<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 								<div class="col-sm-10" style="width: 300px;">
-									<input type="text" class="form-control" id="create-nextContactTime">
+									<input type="text" class="form-control time" id="create-nextContactTime">
 								</div>
 							</div>
 						</div>
@@ -174,7 +230,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveBtn">保存1</button>
 				</div>
 			</div>
 		</div>
@@ -438,7 +494,7 @@
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClueModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" id="addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>

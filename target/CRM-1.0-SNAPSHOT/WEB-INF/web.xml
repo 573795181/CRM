@@ -25,6 +25,10 @@
         <url-pattern>*.do</url-pattern>
         <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
+    
+    <listener>
+        <listener-class>com.myTest.crm.web.listener.SysInitListener</listener-class>
+    </listener>
 
     <servlet>
         <servlet-name>UserServlet</servlet-name>
@@ -52,5 +56,15 @@
         <url-pattern>/workbench/activity/deleteRemark.do</url-pattern>
         <url-pattern>/workbench/activity/saveRemark.do</url-pattern>
         <url-pattern>/workbench/activity/updateRemark.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ClueController</servlet-name>
+        <servlet-class>com.myTest.crm.workbench.web.controller.ClueController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ClueController</servlet-name>
+        <url-pattern>/workbench/clue/getUserList.do</url-pattern>
+        <url-pattern>/workbench/clue/save.do</url-pattern>
     </servlet-mapping>
 </web-app>
